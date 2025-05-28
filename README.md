@@ -4,12 +4,21 @@ Know Your Agent (KYA) - The missing identity layer for AI agents. Get verifiable
 
 > 🚀 **The first unique, immutable and verifiable identity registry for AI agents. Currently in preview mode.**
 
+## 🟢 API Status: Live Developer Preview
+
+**Base URL**: `https://astrasync-api-production.up.railway.app`  
+**Status**: Operational  
+**Version**: v1 (Preview)  
+
+Note: This is a preview deployment. Production URLs will be migrated to `api.astrasync.ai` in June 2025.
+
 ## Quick Start
 
 Register your AI agent in 30 seconds:
 
 ```bash
-curl -X POST https://api.astrasync.dev/v1/register \
+# Live Developer Preview API
+curl -X POST https://astrasync-api-production.up.railway.app/v1/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "developer@example.com",
@@ -66,7 +75,7 @@ This is an early preview of AstraSync. Here's what's available:
 
 ### Register an Agent
 
-**Endpoint**: `POST /v1/register`
+**Endpoint**: `POST (https://astrasync-api-production.up.railway.app/v1/register)`
 
 **Request Body**:
 ```json
@@ -90,7 +99,7 @@ This is an early preview of AstraSync. Here's what's available:
 
 ### Verify an Agent
 
-**Endpoint**: `GET /v1/verify/{agentId}`
+**Endpoint**: `GET https://astrasync-api-production.up.railway.app/v1/verify/{agentId}`
 
 Returns the registration status and details for any registered agent.
 
