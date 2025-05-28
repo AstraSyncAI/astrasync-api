@@ -2,7 +2,7 @@
 Know Your Agent (KYA) - The missing identity layer for AI agents. Get verifiable identity, ownership tracking, and compliance-ready agent cards in one API call.
 # AstraSync Developer Preview
 
-> 🚀 **The first identity registry for AI agents. Currently in preview mode.**
+> 🚀 **The first unique, immutable and verifiable identity registry for AI agents. Currently in preview mode.**
 
 ## Quick Start
 
@@ -113,7 +113,7 @@ Returns the registration status and details for any registered agent.
 
 - 🌟 Star this repo to follow our progress
 - 💬 Join our [Discord](#) for developer discussions
-- 📧 Contact: developers@astrasync.ai
+- 📧 Contact: alphapartners@astrasync.ai
 - 🔗 Website: [astrasync.ai](https://astrasync.ai)
 
 ## About
