@@ -121,7 +121,7 @@ Returns the registration status and details for any registered agent.
 ## Get Involved
 
 - 🌟 Star this repo to follow our progress
-- 💬 Join our [Discord](#) for developer discussions
+- 💬 Join our [Discord](https://discord.gg/X78ctNp7)) for developer discussions
 - 📧 Contact: alphapartners@astrasync.ai
 - 🔗 Website: [astrasync.ai](https://astrasync.ai)
 
