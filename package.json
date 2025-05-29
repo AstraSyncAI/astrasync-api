@@ -6,14 +6,17 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"No tests yet - MVP mode!\""
+    "test": "echo \"No tests yet - MVP mode!\"",
+    "db:check": "node -e \"require('pg').Pool({connectionString: process.env.DATABASE_URL}).query('SELECT NOW()').then(() => console.log('✅ Database connection successful')).catch(e => console.error('❌ Database connection failed:', e.message))\""
   },
   "keywords": [
     "ai",
     "agents",
     "registry",
     "blockchain",
-    "compliance"
+    "compliance",
+    "identity",
+    "astrasync"
   ],
   "author": "AstraSync",
   "license": "MIT",
@@ -28,5 +31,9 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/astrasyncai/astrasync-api"
   }
 }
