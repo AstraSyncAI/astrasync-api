@@ -112,11 +112,11 @@ Returns the registration status and details for any registered agent.
 
 ## Roadmap
 
-- **Now - Feb 2025**: Developer Preview (Temporary IDs)
-- **March 2025**: Blockchain security audit completion
-- **April 2025**: Private Alpha (First 100 developers)
-- **June 2025**: Public Alpha Launch
-- **Q4 2025**: Production Release
+- **Now**: Developer Preview (Temporary IDs)
+- **June 2025**: Blockchain security audit completion
+- **June 2025**: Private Alpha (First 100 developers)
+- **July 2025**: Public Alpha Launch
+- **Q3 2025**: Production Release
 
 ## Get Involved
 
