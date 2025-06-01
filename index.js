@@ -1,4 +1,4 @@
-// index.js - AstraSync API Server (Production Version with Customer Intelligence)
+// index.js - AstraSync API Server (Production Version with Guaranteed Customer Intelligence)
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
@@ -76,6 +76,7 @@ async function initDatabase() {
       CREATE INDEX IF NOT EXISTS idx_agents_registered_at ON agents(registered_at);
       CREATE INDEX IF NOT EXISTS idx_attempts_email ON registration_attempts(email);
       CREATE INDEX IF NOT EXISTS idx_attempts_created ON registration_attempts(created_at);
+      CREATE INDEX IF NOT EXISTS idx_attempts_event_type ON registration_attempts(event_type);
     `);
     
     console.log('✅ Database tables initialized successfully');
@@ -93,6 +94,29 @@ function generateTempId() {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 8).toUpperCase();
   return `TEMP-${timestamp}-${random}`;
+}
+
+// Helper function to log attempts (guaranteed completion)
+async function logAttempt(eventType, email, agentName, source, data) {
+  try {
+    await pool.query(
+      `INSERT INTO registration_attempts 
+       (event_type, email, agent_name, source, data, created_at)
+       VALUES ($1, $2, $3, $4, $5, NOW())`,
+      [
+        eventType,
+        email || null,
+        agentName || null,
+        source || 'unknown',
+        JSON.stringify(data || {})
+      ]
+    );
+    console.log(`📊 Logged ${eventType} for ${email || 'anonymous'}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Failed to log ${eventType}:`, error);
+    return false;
+  }
 }
 
 // Health check endpoint
@@ -122,85 +146,65 @@ app.get('/', async (req, res) => {
   });
 });
 
-// Customer Intelligence: Log registration attempts
+// Customer Intelligence: Log registration attempts (for external calls like MCP)
 app.post('/v1/log-attempt', async (req, res) => {
   const { event, data } = req.body;
   
   try {
-    // Log the attempt with all available data
-    await pool.query(
-      `INSERT INTO registration_attempts 
-       (event_type, email, agent_name, source, data, created_at)
-       VALUES ($1, $2, $3, $4, $5, NOW())`,
-      [
-        event || 'unknown',
-        data?.email || null,
-        data?.agentName || data?.name || null,
-        data?.source || 'unknown',
-        JSON.stringify(data || {})
-      ]
+    const logged = await logAttempt(
+      event || 'unknown',
+      data?.email,
+      data?.agentName || data?.name,
+      data?.source,
+      data
     );
     
-    // Always return success to not break the client flow
-    res.json({ logged: true });
-    
-    // Log for internal monitoring
-    console.log(`📊 Logged ${event} attempt from ${data?.source || 'unknown'} for ${data?.email || 'anonymous'}`);
-    
+    res.json({ logged });
   } catch (error) {
-    console.error('Logging error:', error);
-    // Still return 200 to not break the flow
+    console.error('Logging endpoint error:', error);
+    // Still return 200 to not break client flows
     res.status(200).json({ logged: false });
   }
 });
 
-// Main registration endpoint
+// Main registration endpoint with guaranteed logging
 app.post('/v1/register', async (req, res) => {
   const client = await pool.connect();
   
   try {
-    // First, log the registration attempt for customer intelligence
-    try {
-      await pool.query(
-        `INSERT INTO registration_attempts 
-         (event_type, email, agent_name, source, data, created_at)
-         VALUES ($1, $2, $3, $4, $5, NOW())`,
-        [
-          'registration_attempt',
-          req.body.email || 'not-provided',
-          req.body.agent?.name || req.body.name || 'unnamed',
-          req.headers['x-source'] || 'direct-api',
-          JSON.stringify({
-            body: req.body,
-            headers: {
-              'user-agent': req.headers['user-agent'],
-              'x-source': req.headers['x-source']
-            },
-            ip: req.ip || req.connection.remoteAddress
-          })
-        ]
-      );
-    } catch (logError) {
-      console.error('Failed to log registration attempt:', logError);
-      // Continue with registration even if logging fails
-    }
+    // Extract data for logging
+    const email = req.body.email;
+    const agentName = req.body.agent?.name || req.body.name;
+    const source = req.headers['x-source'] || 'direct-api';
     
-    const { email, agent } = req.body;
+    // Log the attempt first (guaranteed to complete)
+    await logAttempt(
+      'registration_attempt',
+      email,
+      agentName,
+      source,
+      {
+        body: req.body,
+        headers: {
+          'user-agent': req.headers['user-agent'],
+          'x-source': source
+        },
+        ip: req.ip || req.connection.remoteAddress
+      }
+    );
     
-    // Input validation
+    // Validation: Email
     if (!email || !email.includes('@')) {
-      // Log validation failure
-      await pool.query(
-        `INSERT INTO registration_attempts 
-         (event_type, email, agent_name, source, data, created_at)
-         VALUES ($1, $2, $3, $4, $5, NOW())`,
-        [
-          'registration_failed',
-          req.body.email || 'invalid',
-          req.body.agent?.name || req.body.name || 'unnamed',
-          req.headers['x-source'] || 'direct-api',
-          JSON.stringify({ error: 'Invalid email', body: req.body })
-        ]
+      // Log validation failure (wait for completion)
+      await logAttempt(
+        'registration_failed',
+        email || 'invalid-email',
+        agentName,
+        source,
+        { 
+          error: 'Invalid email address',
+          body: req.body 
+        }
       );
       
       return res.status(400).json({
@@ -209,19 +213,24 @@ app.post('/v1/register', async (req, res) => {
       });
     }
     
+    // Validation: Agent data
+    const { agent } = req.body;
     if (!agent || !agent.name || !agent.owner) {
-      // Log validation failure
-      await pool.query(
-        `INSERT INTO registration_attempts 
-         (event_type, email, agent_name, source, data, created_at)
-         VALUES ($1, $2, $3, $4, $5, NOW())`,
-        [
-          'registration_failed',
-          email,
-          req.body.agent?.name || req.body.name || 'unnamed',
-          req.headers['x-source'] || 'direct-api',
-          JSON.stringify({ error: 'Missing name and owner', body: req.body })
-        ]
+      // Log validation failure (wait for completion)
+      await logAttempt(
+        'registration_failed',
+        email,
+        agentName || 'missing-name',
+        source,
+        { 
+          error: 'Missing required fields: name and/or owner',
+          body: req.body,
+          missingFields: {
+            hasAgent: !!agent,
+            hasName: !!(agent?.name),
+            hasOwner: !!(agent?.owner)
+          }
+        }
       );
       
       return res.status(400).json({
@@ -250,7 +259,7 @@ app.post('/v1/register', async (req, res) => {
       apiVersion: 'v1',
       ip: req.ip || req.connection.remoteAddress,
       userAgent: req.headers['user-agent'] || 'unknown',
-      source: req.headers['x-source'] || 'direct-api'
+      source: source
     };
     
     // Start transaction
@@ -289,24 +298,21 @@ app.post('/v1/register', async (req, res) => {
       ]
     );
     
-    // Log successful registration
-    await pool.query(
-      `INSERT INTO registration_attempts 
-       (event_type, email, agent_name, source, data, created_at)
-       VALUES ($1, $2, $3, $4, $5, NOW())`,
-      [
-        'registration_success',
-        email,
-        agent.name,
-        req.headers['x-source'] || 'direct-api',
-        JSON.stringify({ agentId: tempId, agent: agentData })
-      ]
-    );
-    
     // Commit transaction
     await client.query('COMMIT');
     
-    // Log successful registration
+    // Log successful registration (after commit to ensure it happened)
+    await logAttempt(
+      'registration_success',
+      email,
+      agent.name,
+      source,
+      { 
+        agentId: tempId,
+        agent: agentData 
+      }
+    );
+    
     console.log(`✅ New agent registered: ${tempId} - ${agent.name} (${email})`);
     
     // Return response
@@ -331,32 +337,23 @@ app.post('/v1/register', async (req, res) => {
     await client.query('ROLLBACK');
     console.error('Registration error:', error);
     
-    // Log the error
-    try {
-      await pool.query(
-        `INSERT INTO registration_attempts 
-         (event_type, email, agent_name, source, data, created_at)
-         VALUES ($1, $2, $3, $4, $5, NOW())`,
-        [
-          'registration_error',
-          req.body.email || 'unknown',
-          req.body.agent?.name || req.body.name || 'unnamed',
-          req.headers['x-source'] || 'direct-api',
-          JSON.stringify({ 
-            error: error.message, 
-            stack: error.stack,
-            body: req.body 
-          })
-        ]
-      );
-    } catch (logError) {
-      console.error('Failed to log registration error:', logError);
-    }
+    // Log the error (guaranteed completion)
+    await logAttempt(
+      'registration_error',
+      req.body.email || 'unknown',
+      req.body.agent?.name || req.body.name || 'unknown',
+      req.headers['x-source'] || 'direct-api',
+      { 
+        error: error.message,
+        stack: error.stack,
+        body: req.body 
+      }
+    );
     
     res.status(500).json({
       error: 'Internal server error',
       message: 'Failed to register agent. Please try again.',
-      requestId: uuidv4() // For debugging purposes
+      requestId: uuidv4()
     });
   } finally {
     client.release();
@@ -367,6 +364,15 @@ app.post('/v1/register', async (req, res) => {
 app.get('/v1/verify/:agentId', async (req, res) => {
   try {
     const { agentId } = req.params;
+    
+    // Log verification attempt
+    await logAttempt(
+      'verification_attempt',
+      null,
+      null,
+      req.headers['x-source'] || 'direct-api',
+      { agentId }
+    );
     
     const result = await pool.query(
       'SELECT * FROM agents WHERE id = $1',
@@ -467,7 +473,7 @@ app.get('/v1/agent/:agentId', async (req, res) => {
 // List recent agents (public endpoint for dashboard)
 app.get('/v1/agents/recent', async (req, res) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Cap at 100
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
     
     const result = await pool.query(
       `SELECT id, agent_data, registered_at, trust_score 
@@ -513,25 +519,40 @@ app.get('/v1/stats', async (req, res) => {
     
     // Run queries in parallel for better performance
     const [
-      totalResult, 
-      recentResult, 
+      totalResult,
+      recentResult,
       emailResult,
       attemptsResult,
-      failedAttemptsResult
+      failedResult,
+      errorResult,
+      attemptBreakdown
     ] = await Promise.all([
       pool.query('SELECT COUNT(*) as count FROM agents'),
       pool.query('SELECT COUNT(*) as count FROM agents WHERE registered_at > $1', [last24h]),
       pool.query('SELECT COUNT(*) as count FROM email_queue'),
       pool.query('SELECT COUNT(*) as count FROM registration_attempts'),
-      pool.query('SELECT COUNT(*) as count FROM registration_attempts WHERE event_type IN ($1, $2)', 
-        ['registration_failed', 'registration_error'])
+      pool.query(`SELECT COUNT(*) as count FROM registration_attempts WHERE event_type = 'registration_failed'`),
+      pool.query(`SELECT COUNT(*) as count FROM registration_attempts WHERE event_type = 'registration_error'`),
+      pool.query(`
+        SELECT event_type, COUNT(*) as count 
+        FROM registration_attempts 
+        GROUP BY event_type 
+        ORDER BY count DESC
+      `)
     ]);
     
     const totalAgents = parseInt(totalResult.rows[0].count);
     const recentCount = parseInt(recentResult.rows[0].count);
     const emailQueueSize = parseInt(emailResult.rows[0].count);
     const totalAttempts = parseInt(attemptsResult.rows[0].count);
-    const failedAttempts = parseInt(failedAttemptsResult.rows[0].count);
+    const failedAttempts = parseInt(failedResult.rows[0].count);
+    const errorCount = parseInt(errorResult.rows[0].count);
+    
+    // Build event breakdown
+    const eventBreakdown = {};
+    attemptBreakdown.rows.forEach(row => {
+      eventBreakdown[row.event_type] = parseInt(row.count);
+    });
     
     res.json({
       totalAgents: totalAgents,
@@ -541,7 +562,9 @@ app.get('/v1/stats', async (req, res) => {
       customerIntelligence: {
         totalAttempts: totalAttempts,
         failedAttempts: failedAttempts,
-        conversionRate: totalAttempts > 0 ? ((totalAgents / totalAttempts) * 100).toFixed(2) + '%' : 'N/A'
+        errorCount: errorCount,
+        conversionRate: totalAttempts > 0 ? ((totalAgents / totalAttempts) * 100).toFixed(2) + '%' : 'N/A',
+        eventBreakdown: eventBreakdown
       },
       serverTime: now.toISOString(),
       databaseStatus: 'connected',
@@ -558,11 +581,39 @@ app.get('/v1/stats', async (req, res) => {
       customerIntelligence: {
         totalAttempts: 0,
         failedAttempts: 0,
-        conversionRate: 'N/A'
+        errorCount: 0,
+        conversionRate: 'N/A',
+        eventBreakdown: {}
       },
       serverTime: new Date().toISOString(),
       databaseStatus: 'error',
       error: 'Failed to fetch statistics'
+    });
+  }
+});
+
+// Customer intelligence: Recent attempts
+app.get('/v1/attempts/recent', async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 20, 100);
+    
+    const result = await pool.query(
+      `SELECT event_type, email, agent_name, source, created_at, 
+              data->>'error' as error_message
+       FROM registration_attempts 
+       ORDER BY created_at DESC 
+       LIMIT $1`,
+      [limit]
+    );
+    
+    res.json({
+      attempts: result.rows,
+      total: result.rows.length
+    });
+  } catch (error) {
+    console.error('Recent attempts error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch recent attempts'
     });
   }
 });
@@ -578,7 +629,8 @@ app.get('/v1/docs', (req, res) => {
         path: '/v1/register',
         description: 'Register a new AI agent',
         required: ['email', 'agent.name', 'agent.owner'],
-        optional: ['agent.description', 'agent.capabilities', 'agent.version', 'agent.ownerUrl']
+        optional: ['agent.description', 'agent.capabilities', 'agent.version', 'agent.ownerUrl'],
+        headers: ['x-source (optional) - Identifies the source of the request (e.g., "mcp", "web-ui")']
       },
       {
         method: 'GET',
@@ -601,13 +653,22 @@ app.get('/v1/docs', (req, res) => {
       {
         method: 'GET',
         path: '/v1/stats',
-        description: 'Get registration statistics and system status'
+        description: 'Get registration statistics and system status (includes customer intelligence)'
       },
       {
         method: 'POST',
         path: '/v1/log-attempt',
         description: 'Log registration attempts for customer intelligence',
-        parameters: ['event - Event type', 'data - Event data object']
+        body: {
+          event: 'Event type (e.g., registration_attempt, registration_failed)',
+          data: 'Event data object containing email, agentName, source, etc.'
+        }
+      },
+      {
+        method: 'GET',
+        path: '/v1/attempts/recent?limit=20',
+        description: 'Get recent registration attempts',
+        parameters: ['limit - Number of attempts to return (max 100)']
       }
     ],
     documentation: 'https://github.com/astrasyncai/astrasync-api',
@@ -645,16 +706,17 @@ Database: ${process.env.DATABASE_URL ? 'PostgreSQL Connected' : 'No Database Con
 Time: ${new Date().toISOString()}
 
 Endpoints:
-- GET    /                  - Health check
-- POST   /v1/register       - Register new agent
-- GET    /v1/verify/:id     - Verify agent
-- GET    /v1/agent/:id      - Get agent details
-- GET    /v1/agents/recent  - List recent agents
-- GET    /v1/stats          - Get statistics
-- POST   /v1/log-attempt    - Log registration attempts
-- GET    /v1/docs           - API documentation
+- GET    /                     - Health check
+- POST   /v1/register          - Register new agent
+- GET    /v1/verify/:id        - Verify agent
+- GET    /v1/agent/:id         - Get agent details
+- GET    /v1/agents/recent     - List recent agents
+- GET    /v1/stats             - Get statistics
+- POST   /v1/log-attempt       - Log registration attempts
+- GET    /v1/attempts/recent   - View recent attempts
+- GET    /v1/docs              - API documentation
 
-Customer Intelligence: ENABLED
+Customer Intelligence: ENABLED ✓
 Ready for connections!
   `);
 });
