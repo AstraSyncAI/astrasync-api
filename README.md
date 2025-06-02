@@ -1,7 +1,7 @@
 # AstraSync API
 
 <div align="center">
-  <img src="(https://www.astrasync.ai/assets/AS_black_IconFCN.png)" alt="AstraSync Logo" width="200"/>
+  <img src="https://www.astrasync.ai/assets/AS_black_IconFCN.png" alt="AstraSync Logo" width="200"/>
   
   # Know Your Agent (KYA) Registry
   
