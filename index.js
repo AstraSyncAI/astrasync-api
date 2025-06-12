@@ -456,25 +456,25 @@ app.get('/profile/:agentId', async (req, res) => {
             }
             .card {
               width: 600px;
-              background: linear-gradient(135deg, #5B4FCF 0%, #8B5CF6 100%);
+              background: linear-gradient(135deg, #4A3FC4 0%, #7B4FE6 100%);
               border-radius: 20px;
               padding: 40px;
               color: white;
               position: relative;
               overflow: hidden;
-              box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+              box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             }
             .logo-container {
               text-align: center;
               margin-bottom: 30px;
             }
             .logo {
-              width: 60px;
-              height: 60px;
+              width: 80px;
+              height: 80px;
               filter: brightness(0) invert(1);
             }
             .title {
-              font-size: 36px;
+              font-size: 44px;
               font-weight: 700;
               text-align: center;
               margin-bottom: 30px;
@@ -482,11 +482,11 @@ app.get('/profile/:agentId', async (req, res) => {
             }
             .agent-info {
               margin-bottom: 30px;
-              font-size: 18px;
+              font-size: 20px;
               line-height: 1.8;
             }
             .agent-id {
-              font-size: 20px;
+              font-size: 22px;
               margin-bottom: 8px;
             }
             .trust-section {
@@ -496,13 +496,14 @@ app.get('/profile/:agentId', async (req, res) => {
               gap: 40px;
             }
             .trust-items {
-              font-size: 20px;
+              font-size: 22px;
               line-height: 1.8;
             }
             .trust-item {
               display: flex;
               align-items: center;
               gap: 10px;
+              font-size: 20px;
             }
             .green-dot {
               width: 12px;
@@ -519,7 +520,7 @@ app.get('/profile/:agentId', async (req, res) => {
               display: flex;
               align-items: center;
               justify-content: center;
-              font-size: 42px;
+              font-size: 48px;
               font-weight: 700;
               position: relative;
             }
@@ -539,8 +540,8 @@ app.get('/profile/:agentId', async (req, res) => {
             .confidential {
               position: absolute;
               right: 40px;
-              bottom: 200px;
-              font-size: 28px;
+              bottom: 320px;
+              font-size: 30px;
               font-weight: 700;
               color: rgba(229, 62, 62, 0.8);
               transform: rotate(0deg);
@@ -548,7 +549,7 @@ app.get('/profile/:agentId', async (req, res) => {
             }
             .agent-details {
               margin: 30px 0;
-              font-size: 18px;
+              font-size: 20px;
               line-height: 1.6;
             }
             .capabilities-section {
@@ -558,14 +559,14 @@ app.get('/profile/:agentId', async (req, res) => {
               display: flex;
               align-items: center;
               justify-content: space-between;
-              font-size: 20px;
-              margin: 10px 0;
+              font-size: 22px;
+              margin: 12px 0;
             }
             .skills-section {
               margin-top: 40px;
             }
             .skills-title {
-              font-size: 24px;
+              font-size: 26px;
               font-weight: 700;
               margin-bottom: 20px;
             }
@@ -573,7 +574,7 @@ app.get('/profile/:agentId', async (req, res) => {
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 20px;
-              font-size: 18px;
+              font-size: 20px;
             }
             .footer-logo {
               display: flex;
@@ -583,20 +584,20 @@ app.get('/profile/:agentId', async (req, res) => {
               gap: 20px;
             }
             .letta-logo {
-              height: 40px;
+              height: 50px;
               filter: brightness(0) invert(1);
             }
             .google-logo {
               position: absolute;
               right: 40px;
               top: 200px;
-              height: 50px;
+              height: 60px;
             }
             .a2a-protocol {
               position: absolute;
               right: 40px;
-              top: 260px;
-              font-size: 18px;
+              top: 270px;
+              font-size: 20px;
               text-align: center;
             }
           </style>
@@ -617,7 +618,7 @@ app.get('/profile/:agentId', async (req, res) => {
             
             <div class="trust-section">
               <div class="trust-items">
-                <div style="font-size: 24px; margin-bottom: 10px;">TRUST SCORE</div>
+                <div style="font-size: 26px; margin-bottom: 10px;">TRUST SCORE</div>
                 <div class="trust-item">
                   <span class="green-dot"></span>
                   <span>Developer</span>
@@ -635,7 +636,7 @@ app.get('/profile/:agentId', async (req, res) => {
                 ${trustScore}%
               </div>
               <div style="margin-left: 20px;">
-                <div style="font-size: 20px;">Powered by</div>
+                <div style="font-size: 22px;">Powered by</div>
               </div>
             </div>
             
@@ -675,7 +676,7 @@ app.get('/profile/:agentId', async (req, res) => {
               <img src="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/Letta-logo-RGB_OffBlackonTransparent_cropped_small.png" alt="Letta" class="letta-logo">
             </div>
             
-            <img src="https://www.gstatic.com/images/branding/product/2x/google_ai_96dp.png" alt="Google AI" class="google-logo">
+            <img src="https://www.gstatic.com/marketing-cms/assets/images/1b/f6/29dc803641e3b2b080f9e72b1c40/google-ai.webp=n-w96-h100-fcrop64=1,000005bcfffffa44-rw" alt="Google AI" class="google-logo">
             <div class="a2a-protocol">A2A Protocol</div>
           </div>
         </body>
