@@ -577,19 +577,6 @@ app.get('/profile/:agentId', async (req, res) => {
               height: 60px;
               filter: brightness(0) invert(1);
             }
-            .google-logo {
-              position: absolute;
-              right: 40px;
-              bottom: 120px;
-              height: 70px;
-            }
-            .a2a-protocol {
-              position: absolute;
-              right: 35px;
-              bottom: 80px;
-              font-size: 22px;
-              text-align: center;
-            }
           </style>
         </head>
         <body>
@@ -663,9 +650,6 @@ app.get('/profile/:agentId', async (req, res) => {
             <div class="footer-logo">
               <img src="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/Letta-logo-RGB_OffBlackonTransparent_cropped_small.png" alt="Letta" class="letta-logo">
             </div>
-            
-            <img src="https://www.gstatic.com/marketing-cms/assets/images/1b/f6/29dc803641e3b2b080f9e72b1c40/google-ai.webp=n-w96-h100-fcrop64=1,000005bcfffffa44-rw" alt="Google AI" class="google-logo">
-            <div class="a2a-protocol">A2A Protocol</div>
           </div>
         </body>
       </html>
