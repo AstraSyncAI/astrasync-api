@@ -469,12 +469,12 @@ app.get('/profile/:agentId', async (req, res) => {
               margin-bottom: 30px;
             }
             .logo {
-              width: 80px;
-              height: 80px;
+              width: 100px;
+              height: 100px;
               filter: brightness(0) invert(1);
             }
             .title {
-              font-size: 44px;
+              font-size: 48px;
               font-weight: 700;
               text-align: center;
               margin-bottom: 30px;
@@ -482,11 +482,11 @@ app.get('/profile/:agentId', async (req, res) => {
             }
             .agent-info {
               margin-bottom: 30px;
-              font-size: 20px;
+              font-size: 22px;
               line-height: 1.8;
             }
             .agent-id {
-              font-size: 22px;
+              font-size: 24px;
               margin-bottom: 8px;
             }
             .trust-section {
@@ -496,14 +496,14 @@ app.get('/profile/:agentId', async (req, res) => {
               gap: 40px;
             }
             .trust-items {
-              font-size: 22px;
+              font-size: 24px;
               line-height: 1.8;
             }
             .trust-item {
               display: flex;
               align-items: center;
               gap: 10px;
-              font-size: 20px;
+              font-size: 22px;
             }
             .green-dot {
               width: 12px;
@@ -520,7 +520,7 @@ app.get('/profile/:agentId', async (req, res) => {
               display: flex;
               align-items: center;
               justify-content: center;
-              font-size: 48px;
+              font-size: 52px;
               font-weight: 700;
               position: relative;
             }
@@ -540,8 +540,8 @@ app.get('/profile/:agentId', async (req, res) => {
             .confidential {
               position: absolute;
               right: 40px;
-              bottom: 320px;
-              font-size: 30px;
+              bottom: 380px;
+              font-size: 32px;
               font-weight: 700;
               color: rgba(229, 62, 62, 0.8);
               transform: rotate(0deg);
@@ -549,7 +549,7 @@ app.get('/profile/:agentId', async (req, res) => {
             }
             .agent-details {
               margin: 30px 0;
-              font-size: 20px;
+              font-size: 22px;
               line-height: 1.6;
             }
             .capabilities-section {
@@ -559,14 +559,14 @@ app.get('/profile/:agentId', async (req, res) => {
               display: flex;
               align-items: center;
               justify-content: space-between;
-              font-size: 22px;
+              font-size: 24px;
               margin: 12px 0;
             }
             .skills-section {
               margin-top: 40px;
             }
             .skills-title {
-              font-size: 26px;
+              font-size: 28px;
               font-weight: 700;
               margin-bottom: 20px;
             }
@@ -574,7 +574,7 @@ app.get('/profile/:agentId', async (req, res) => {
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 20px;
-              font-size: 20px;
+              font-size: 22px;
             }
             .footer-logo {
               display: flex;
@@ -584,20 +584,20 @@ app.get('/profile/:agentId', async (req, res) => {
               gap: 20px;
             }
             .letta-logo {
-              height: 50px;
+              height: 60px;
               filter: brightness(0) invert(1);
             }
             .google-logo {
               position: absolute;
               right: 40px;
-              top: 200px;
-              height: 60px;
+              top: 280px;
+              height: 70px;
             }
             .a2a-protocol {
               position: absolute;
               right: 40px;
-              top: 270px;
-              font-size: 20px;
+              top: 360px;
+              font-size: 22px;
               text-align: center;
             }
           </style>
@@ -618,7 +618,7 @@ app.get('/profile/:agentId', async (req, res) => {
             
             <div class="trust-section">
               <div class="trust-items">
-                <div style="font-size: 26px; margin-bottom: 10px;">TRUST SCORE</div>
+                <div style="font-size: 28px; margin-bottom: 10px;">TRUST SCORE</div>
                 <div class="trust-item">
                   <span class="green-dot"></span>
                   <span>Developer</span>
@@ -636,7 +636,7 @@ app.get('/profile/:agentId', async (req, res) => {
                 ${trustScore}%
               </div>
               <div style="margin-left: 20px;">
-                <div style="font-size: 22px;">Powered by</div>
+                <div style="font-size: 24px;">Powered by</div>
               </div>
             </div>
             
