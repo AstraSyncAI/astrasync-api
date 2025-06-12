@@ -458,7 +458,7 @@ app.get('/profile/:agentId', async (req, res) => {
               width: 600px;
               background: linear-gradient(135deg, #4A3FC4 0%, #7B4FE6 100%);
               border-radius: 20px;
-              padding: 40px;
+              padding: 35px;
               color: white;
               position: relative;
               overflow: hidden;
@@ -466,7 +466,7 @@ app.get('/profile/:agentId', async (req, res) => {
             }
             .logo-container {
               text-align: center;
-              margin-bottom: 30px;
+              margin-bottom: 20px;
             }
             .logo {
               width: 100px;
@@ -477,13 +477,13 @@ app.get('/profile/:agentId', async (req, res) => {
               font-size: 54px;
               font-weight: 700;
               text-align: center;
-              margin-bottom: 30px;
+              margin-bottom: 20px;
               letter-spacing: 2px;
             }
             .agent-info {
-              margin-bottom: 30px;
+              margin-bottom: 20px;
               font-size: 24px;
-              line-height: 1.8;
+              line-height: 1.6;
             }
             .agent-id {
               font-size: 26px;
@@ -492,12 +492,12 @@ app.get('/profile/:agentId', async (req, res) => {
             .trust-section {
               display: flex;
               align-items: center;
-              margin: 30px 0;
-              gap: 40px;
+              margin: 20px 0;
+              gap: 30px;
             }
             .trust-items {
               font-size: 26px;
-              line-height: 1.8;
+              line-height: 1.6;
             }
             .trust-item {
               display: flex;
@@ -537,50 +537,40 @@ app.get('/profile/:agentId', async (req, res) => {
               border-right-color: #E53E3E;
               transform: rotate(45deg);
             }
-            .confidential {
-              position: absolute;
-              right: 40px;
-              bottom: 440px;
-              font-size: 32px;
-              font-weight: 700;
-              color: rgba(229, 62, 62, 0.8);
-              transform: rotate(0deg);
-              letter-spacing: 3px;
-            }
             .agent-details {
-              margin: 30px 0;
+              margin: 20px 0;
               font-size: 24px;
-              line-height: 1.6;
+              line-height: 1.5;
             }
             .capabilities-section {
-              margin: 30px 0;
+              margin: 20px 0;
             }
             .capability-item {
               display: flex;
               align-items: center;
               justify-content: space-between;
               font-size: 26px;
-              margin: 12px 0;
+              margin: 8px 0;
             }
             .skills-section {
-              margin-top: 40px;
+              margin-top: 25px;
             }
             .skills-title {
               font-size: 30px;
               font-weight: 700;
-              margin-bottom: 20px;
+              margin-bottom: 15px;
             }
             .skills-grid {
               display: grid;
               grid-template-columns: 1fr 1fr;
-              gap: 20px;
+              gap: 15px;
               font-size: 24px;
             }
             .footer-logo {
               display: flex;
               align-items: center;
               justify-content: center;
-              margin-top: 40px;
+              margin-top: 25px;
               gap: 20px;
             }
             .letta-logo {
@@ -590,13 +580,13 @@ app.get('/profile/:agentId', async (req, res) => {
             .google-logo {
               position: absolute;
               right: 40px;
-              top: 350px;
+              bottom: 120px;
               height: 70px;
             }
             .a2a-protocol {
               position: absolute;
-              right: 40px;
-              top: 430px;
+              right: 35px;
+              bottom: 80px;
               font-size: 22px;
               text-align: center;
             }
@@ -639,8 +629,6 @@ app.get('/profile/:agentId', async (req, res) => {
                 <div style="font-size: 26px;">Powered by</div>
               </div>
             </div>
-            
-            <div class="confidential">CONFIDENTIAL</div>
             
             <div class="agent-details">
               <div>Name - ${agentData.name}</div>
