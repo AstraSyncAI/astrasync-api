@@ -566,17 +566,6 @@ app.get('/profile/:agentId', async (req, res) => {
               gap: 15px;
               font-size: 24px;
             }
-            .footer-logo {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-top: 25px;
-              gap: 20px;
-            }
-            .letta-logo {
-              height: 60px;
-              filter: brightness(0) invert(1);
-            }
           </style>
         </head>
         <body>
@@ -645,10 +634,6 @@ app.get('/profile/:agentId', async (req, res) => {
               <div class="skills-grid">
                 ${skills.map(skill => `<div>${skill}</div>`).join('')}
               </div>
-            </div>
-            
-            <div class="footer-logo">
-              <img src="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/Letta-logo-RGB_OffBlackonTransparent_cropped_small.png" alt="Letta" class="letta-logo">
             </div>
           </div>
         </body>
