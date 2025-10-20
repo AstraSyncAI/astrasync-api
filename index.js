@@ -135,9 +135,9 @@ app.get('/', async (req, res) => {
   
   res.json({
     service: 'AstraSync API',
-    version: '0.1.0',
-    status: 'preview',
-    message: 'Welcome to AstraSync Developer Preview. See /v1/docs for API documentation.',
+    version: '1.0.0',
+    status: 'production',
+    message: 'Welcome to AstraSync Production API. See /v1/docs for API documentation.',
     stats: {
       totalAgents: totalAgents,
       blockchainStatus: 'pending_audit',
@@ -275,7 +275,7 @@ app.post('/v1/register', async (req, res) => {
         email,
         'registered',
         'pending',
-        'TEMP-95%',
+        '95%',
         timestamp,
         JSON.stringify(agentData),
         JSON.stringify(metadata)
@@ -323,11 +323,11 @@ app.post('/v1/register', async (req, res) => {
         status: 'pending',
         message: 'Blockchain registration queued. You will be notified upon completion.'
       },
-      trustScore: 'TEMP-95%',
-      message: 'Agent registered successfully in DEVELOPER PREVIEW mode. Your TEMP credentials will automatically convert to permanent blockchain-verified credentials when you create an account at https://www.astrasync.ai/alphaSignup using the same email address.',
+      trustScore: '95%',
+      message: 'Agent registered successfully. Your agent has been assigned a temporary ID and will be queued for blockchain verification. Create an account at https://www.astrasync.ai/alphaSignup to manage your agent credentials.',
       links: {
         verify: `${req.protocol}://${req.get('host')}/v1/verify/${tempId}`,
-        dashboard: 'https://preview.astrasync.ai',
+        dashboard: 'https://astrasync.ai',
         createAccount: 'https://www.astrasync.ai/alphaSignup',
         profileUrl: `${req.protocol}://${req.get('host')}/profile/${tempId}`
       },
@@ -716,8 +716,8 @@ app.get('/v1/verify/:agentId', async (req, res) => {
       },
       registeredAt: agent.registered_at,
       verified: true,
-      message: agent.trust_score.startsWith('TEMP') 
-        ? 'This is a DEVELOPER PREVIEW agent. Create an account at https://www.astrasync.ai/alphaSignup to convert to permanent credentials.'
+      message: agent.id.startsWith('TEMP')
+        ? 'This agent is registered with a temporary ID. Create an account at https://www.astrasync.ai/alphaSignup to manage your agent credentials.'
         : 'Agent verified successfully'
     });
   } catch (error) {
@@ -882,7 +882,7 @@ app.get('/v1/stats', async (req, res) => {
       serverTime: now.toISOString(),
       databaseStatus: 'connected',
       uptime: process.uptime(),
-      apiVersion: '0.1.0'
+      apiVersion: '1.0.0'
     });
   } catch (error) {
     console.error('Stats error:', error);

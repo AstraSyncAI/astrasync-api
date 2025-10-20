@@ -1,7 +1,7 @@
 {
   "name": "astrasync-api",
-  "version": "0.1.0",
-  "description": "AstraSync AI Agent Registry API - Developer Preview",
+  "version": "1.0.0",
+  "description": "AstraSync AI Agent Registry API - Production",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

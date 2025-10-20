@@ -5,8 +5,8 @@
   
   # Know Your Agent (KYA) Registry
   
-  [![API Status](https://img.shields.io/badge/API-Operational-green)](https://astrasync-api-production.up.railway.app)
-  [![Version](https://img.shields.io/badge/version-v1_preview-blue)](https://astrasync-api-production.up.railway.app)
+  [![API Status](https://img.shields.io/badge/API-Operational-green)](https://astrasync.ai/api)
+  [![Version](https://img.shields.io/badge/version-v1-blue)](https://astrasync.ai/api)
   [![Discord](https://img.shields.io/discord/X78ctNp7?label=Discord&logo=discord)](https://discord.com/invite/X78ctNp7)
   [![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
   
@@ -18,7 +18,7 @@
 Register your AI agent in 30 seconds:
 
 ```bash
-curl -X POST https://astrasync-api-production.up.railway.app/v1/register \
+curl -X POST https://astrasync.ai/api/v1/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "developer@example.com",
@@ -43,7 +43,7 @@ You'll receive:
   },
   "trustScore": "TEMP-95%",
   "message": "Agent registered successfully with temporary credentials. Create an account at https://www.astrasync.ai/alphaSignup to convert to permanent credentials.",
-  "verifyUrl": "https://astrasync-api-production.up.railway.app/v1/verify/TEMP-1706439245-X7K9M2"
+  "verifyUrl": "https://astrasync.ai/api/v1/verify/TEMP-1706439245-X7K9M2"
 }
 ```
 
@@ -68,7 +68,7 @@ AstraSync solves these problems with:
 
 ### Base URL
 ```
-https://astrasync-api-production.up.railway.app
+https://astrasync.ai/api
 ```
 
 ### 1. Register Agent
@@ -110,7 +110,7 @@ Register a new AI agent and receive a unique identifier.
   },
   "trustScore": "TEMP-95%",
   "message": "Registration successful",
-  "verifyUrl": "https://astrasync-api-production.up.railway.app/v1/verify/TEMP-..."
+  "verifyUrl": "https://astrasync.ai/api/v1/verify/TEMP-..."
 }
 ```
 
@@ -121,7 +121,7 @@ Verify if an agent is registered and retrieve its status.
 
 #### Example
 ```bash
-curl https://astrasync-api-production.up.railway.app/v1/verify/TEMP-1706439245-X7K9M2
+curl https://astrasync.ai/api/v1/verify/TEMP-1706439245-X7K9M2
 ```
 
 #### Response
@@ -143,7 +143,7 @@ Retrieve full agent details (requires matching email).
 
 #### Example
 ```bash
-curl "https://astrasync-api-production.up.railway.app/v1/agent/TEMP-1706439245-X7K9M2?email=developer@example.com"
+curl "https://astrasync.ai/api/v1/agent/TEMP-1706439245-X7K9M2?email=developer@example.com"
 ```
 
 ## 📱 Platform Support
@@ -161,29 +161,24 @@ curl "https://astrasync-api-production.up.railway.app/v1/agent/TEMP-1706439245-X
 
 ## 🔐 Authentication & Security
 
-### Developer Preview
-- No API keys required during preview
+### Production
 - Email verification for agent ownership
 - Rate limiting: 100 requests per hour
+- API key authentication for verified accounts
+- HTTPS encryption for all communications
 
-### Production (Coming June 2025)
-- API key authentication
-- OAuth 2.0 support
-- Enhanced rate limits for verified accounts
-- Webhook notifications
-
-## 📊 Developer Preview Features
+## 📊 Production Features
 
 ### ✅ Available Now
-- Agent registration with temporary IDs (TEMP-XXXXXX)
+- Agent registration with production IDs (ASTRAS-XXXXXX)
 - Email notifications for registration
-- Basic ownership tracking
+- Ownership tracking and verification
+- Dynamic trust scoring (0-100 scale)
 - Customer intelligence logging
+- Blockchain registration queuing
 
-### 🔄 Coming Soon (June 2025 Alpha)
-- Production identifiers (ASTRAS-XXXXXX)
-- Live blockchain registration
-- Dynamic trust scoring
+### 🔄 Coming Soon
+- Live blockchain verification
 - Ownership transfers
 - Webhook notifications
 - Advanced compliance features
